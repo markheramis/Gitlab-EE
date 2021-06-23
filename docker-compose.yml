@@ -13,13 +13,14 @@ services:
         - '${HTTPS_PORT}:443'
         - '${SSH_PORT}:22'
         volumes:
-        - 'config:/etc/gitlab'
-        - 'logs:/var/log/gitlab'
-        - 'data:/var/opt/gitlab'
-volumes:
-    config:
-        driver: local
-    logs:
-        driver: local
-    data:
-        driver: local
+        - './gitlab-ee/config:/etc/gitlab'
+        - './gitlab-ee/logs:/var/log/gitlab'
+        - './gitlab-ee/data:/var/opt/gitlab'
+    runner:
+        image: 'gitlab/gitlab-runner:latest' # for debugging purposes
+        # image: 'gitlab/gitlab-runner:alpine' # smaller footprint, good for production
+        restart: always
+        container_name: gitlab-runner
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./runner/config:/etc/gitlab-runner
