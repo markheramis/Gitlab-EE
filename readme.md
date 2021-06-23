@@ -12,4 +12,4 @@ docker-compose up
 
 and you're good to go.
 
-* NOTE * you need [Docker] for this to work.
+*NOTE* you need [Docker] for this to work.
