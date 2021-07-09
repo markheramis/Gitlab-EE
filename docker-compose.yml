@@ -1,6 +1,7 @@
 version: "3.6"
 services:
     web:
+        container_name: "gitlab-ee"
         image: "gitlab/gitlab-ee:latest"
         restart: always
         hostname: "${HOST_NAME}"
@@ -26,6 +27,8 @@ services:
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
             - "./runner/config:/etc/gitlab-runner"
+        networks:
+            - "git_network"
 networks:
     git_network:
         driver: "bridge"
