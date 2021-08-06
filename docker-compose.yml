@@ -3,7 +3,7 @@ services:
     gitlab_web:
         container_name: gitlab-ee
         image: gitlab/gitlab-ee:latest
-        restart: always
+        restart: unless-stopped
         hostname: "${HOST_NAME}"
         privileged: false
         security_opt:
@@ -28,7 +28,11 @@ services:
                 # If your SMTP server does not like the default 'From: gitlab@localhost' you
                 gitlab_rails['gitlab_email_from']           = '${GITLAB_EMAIL_FROM}'
                 gitlab_rails['gitlab_email_reply_to']       = '${GITLAB_EMAIL_REPLY_TO}'
+
+                # SSH
+                gitlab_rails['gitlab_shell_ssh_port'] = ${SSH_PORT:-22}
                 # Add any other gitlab.rb configuration here, each on its own line
+                
                 
         ports:
             - "${HTTP_PORT}:80"
@@ -41,16 +45,16 @@ services:
         networks:
             - "git_network"
     gitlab_runner:
-        container_name: gitlab-runner
+        container_name: gitlab-runner:latest
         image: "gitlab/gitlab-runner:latest" # for debugging purposes
         # image: "gitlab/gitlab-runner:alpine" # smaller footprint, good for production
-        restart: "always"
+        restart: unless-stopped
         privileged: false
         security_opt:
             - no-new-privileges:true
         volumes:
-            - "/var/run/docker.sock:/var/run/docker.sock"
-            - "./runner/config:/etc/gitlab-runner"
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./runner/config:/etc/gitlab-runner
         networks:
             - "git_network"
 
