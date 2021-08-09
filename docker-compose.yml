@@ -1,10 +1,10 @@
 version: "3.6"
 services:
     gitlab_web:
-        container_name: gitlab-ee
+        container_name: gitlab
         image: gitlab/gitlab-ee:latest
         restart: unless-stopped
-        hostname: "${HOST_NAME}"
+        hostname: ${GITLAB_HOST_NAME}
         privileged: false
         security_opt:
             - no-new-privileges:true
@@ -45,18 +45,17 @@ services:
         networks:
             - "git_network"
     gitlab_runner:
-        container_name: gitlab-runner:latest
+        container_name: gitlab-runner
         image: "gitlab/gitlab-runner:latest" # for debugging purposes
         # image: "gitlab/gitlab-runner:alpine" # smaller footprint, good for production
         restart: unless-stopped
+        hostname: ${RUNNER_HOST_NAME}
         privileged: false
         security_opt:
             - no-new-privileges:true
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./runner/config:/etc/gitlab-runner
-        networks:
-            - "git_network"
 
 # docker run -d --name mta -h mail.example -e MAIL_DOMAIN=mail.example -e DP_USER=xx@example.com -e DP_PASS=123456 nicescale/sendmail
 
